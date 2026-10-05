@@ -2,7 +2,7 @@
 
 ## Dependency
 
-Add `com.betacalendars/calendar-query` version `0.1.0` to your Clojure CLI dependencies, then require `betacalendars.calendar-query` as `q`.
+Add `net.clojars.mateopedersen/calendar-query` version `0.1.0` to your Clojure CLI dependencies, then require `betacalendars.calendar-query` as `q`.
 
 ## Produce a weekday projection
 

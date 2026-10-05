@@ -9,7 +9,7 @@ Dates use `java.time.LocalDate`; month values use `java.time.YearMonth`. There a
 ## Install
 
 ```clojure
-com.betacalendars/calendar-query {:mvn/version "0.1.0"}
+net.clojars.mateopedersen/calendar-query {:mvn/version "0.1.0"}
 ```
 
 ## Query dates

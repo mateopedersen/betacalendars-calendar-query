@@ -1,7 +1,7 @@
 (ns build
   (:require [clojure.tools.build.api :as b]))
 
-(def lib 'com.betacalendars/calendar-query)
+(def lib 'net.clojars.mateopedersen/calendar-query)
 (def version "0.1.0")
 (def class-dir "target/classes")
 (def jar-file (format "target/%s-%s.jar" (name lib) version))

@@ -341,7 +341,7 @@
                                          c (if (= direction :desc) (- c) c)]
                                      (if (zero? c) (recur more) c)))))
                              rows)))
-       :else (eduction xf input))))))
+       :else (eduction xf input)))))
 
 (defn explain
   "Return a deterministic EDN map describing the normalized execution plan."

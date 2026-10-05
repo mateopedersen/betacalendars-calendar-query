@@ -1,0 +1,13 @@
+{:cljdoc.doc/tree [["Readme" {:file "README.md"}]
+                   ["Getting Started" {:file "doc/getting-started.md"}]
+                   ["Query Language" {:file "doc/query-language.md"}]
+                   ["Transducers" {:file "doc/transducers.md"}]
+                   ["Query Plans" {:file "doc/query-plans.md"}]
+                   ["Date Windows" {:file "doc/date-windows.md"}]
+                   ["Month Projections" {:file "doc/month-projections.md"}]
+                   ["Blank Projections" {:file "doc/blank-projections.md"}]
+                   ["Boundary Dataset" {:file "doc/boundary-dataset.md"}]
+                   ["Performance" {:file "doc/performance.md"}]
+                   ["Security" {:file "doc/security.md"}]
+                   ["Design" {:file "doc/design.md"}]
+                   ["Changelog" {:file "CHANGELOG.md"}]]}

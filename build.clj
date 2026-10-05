@@ -27,10 +27,17 @@
   (b/delete {:path "target"}))
 
 (defn jar [_]
+  (b/write-pom {:target "pom.xml"
+                :lib lib
+                :version version
+                :basis @basis
+                :src-dirs ["src"]
+                :pom-data (:pom-data pom-options)})
   (b/write-pom {:class-dir class-dir
                 :lib lib
                 :version version
                 :basis @basis
+                :src-pom "pom.xml"
                 :src-dirs ["src"]
                 :pom-data (:pom-data pom-options)})
   (b/copy-dir {:src-dirs ["src"] :target-dir class-dir})

@@ -25,6 +25,10 @@ jobs:
       - name: Inspect release artifact and POM
         run: |
           jar tf target/calendar-query-0.1.0.jar
+          test -s pom.xml
+          grep -q '<groupId>net.clojars.mateopedersen</groupId>' pom.xml
+          grep -q '<version>0.1.0</version>' pom.xml
+          grep -q '<url>https://www.betacalendars.com/</url>' pom.xml
           test -s target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
           grep -q '<groupId>net.clojars.mateopedersen</groupId>' target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
           grep -q '<version>0.1.0</version>' target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml

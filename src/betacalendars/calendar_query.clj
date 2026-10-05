@@ -334,14 +334,16 @@
                              groups)))
        order-by (let [rows (into [] xf input)
                       terms (vec order-by)]
-                  (vec (sort (fn [a b]
-                               (loop [[[field direction] & more] terms]
-                                 (if-not field 0
-                                   (let [c (compare-values (get a field) (get b field))
-                                         c (if (= direction :desc) (- c) c)]
-                                     (if (zero? c) (recur more) c)))))
-                             rows)))
-       :else (eduction xf input)))))
+                  (mapv #(project-record % select serializable?)
+                        (sort (fn [a b]
+                                (loop [[[field direction] & more] terms]
+                                  (if-not field 0
+                                    (let [c (compare-values (get a field) (get b field))
+                                          c (if (= direction :desc) (- c) c)]
+                                      (if (zero? c) (recur more) c))))
+                              rows)))
+       :else (eduction (map #(project-record % select serializable?))
+                       (eduction xf input))))))
 
 (defn explain
   "Return a deterministic EDN map describing the normalized execution plan."

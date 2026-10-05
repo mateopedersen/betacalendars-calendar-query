@@ -109,7 +109,7 @@
                            (q/date-range "2026-11-29" "2026-12-02"))]
     (is (= [2 2] (mapv count windows)))
     (is (= [(YearMonth/of 2026 11) (YearMonth/of 2026 12)]
-           (mapv #(YearMonth/from (:date (first %))) windows)))
+           (mapv #(YearMonth/from (first %)) windows)))
     (is (= 2 (count grouped)))
     (is (= [2 2] (mapv count (vals grouped)))))
   (let [grouped (q/execute {:group-by :year-month
@@ -123,8 +123,10 @@
   (let [records (into [] (q/annotate-boundaries)
                       (q/date-range "2028-02-28" "2028-03-01"))]
     (is (= [false true false] (mapv :leap-day? records)))
-    (is (:month-end? (second records)))
-    (is (:quarter-start? (nth records 2)))))
+    (is (:month-end? (second records))))
+  (is (:quarter-start?
+       (first (into [] (q/annotate-boundaries)
+                    (q/date-range "2028-04-01" "2028-04-01")))))
 
 (deftest calendar-projections
   (let [month (q/project-month "2027-01" {:week-start :monday})

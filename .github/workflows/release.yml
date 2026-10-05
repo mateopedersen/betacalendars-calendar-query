@@ -3,6 +3,7 @@ name: Publish to Clojars
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -40,6 +41,7 @@ jobs:
 
   verify-consumer:
     needs: publish
+    if: always() && (needs.publish.result == 'success' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/setup-java@v5
@@ -59,7 +61,7 @@ jobs:
           clojure -P
           clojure -M -e '
           (require (quote [betacalendars.calendar-query :as q]))
-          (assert (= 3 (count (q/execute {:from "2026-11-01" :to "2026-11-03"}))))
+          (assert (= 3 (count (into [] (q/execute {:from "2026-11-01" :to "2026-11-03"})))))
           (assert (= ["2026-11-02"] (mapv :date (q/execute {:from "2026-11-01" :to "2026-11-03" :where [:weekday? :monday] :select [:date] :serializable? true}))))
           (assert (:streaming? (q/explain {:from "2026-11-01" :to "2026-11-03"})))
           (assert (= 31 (:day-count (q/project-month "2027-01"))))

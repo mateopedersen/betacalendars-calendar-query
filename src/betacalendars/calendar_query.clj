@@ -176,10 +176,9 @@
 
 (defn- project-record [record select serializable?]
   (let [d (:date record)
-        all (merge (reduce-kv (fn [m k v] (assoc m k v))
-                              (into {} (map (fn [k] [k (field-value d k)]) base-fields))
-                              (dissoc record :date))
-                   record)
+        computed (into {} (map (fn [k] [k (field-value d k)]) base-fields))
+        custom (apply dissoc record (conj base-fields :date))
+        all (merge computed custom)
         value (fn [k]
                 (let [v (get all k ::unknown)]
                   (if (and serializable? v)
@@ -281,7 +280,7 @@
   ordering and grouping are intentionally handled by execute, which reports
   their materialization cost in explain."
   [query]
-  (let [{:keys [where derive select from order-by group-by]} (validate-query query)]
+  (let [{:keys [where derive select from to order-by group-by]} (validate-query query)]
     (when (or order-by group-by)
       (invalid! "Global ordering or grouping requires execute, not compile-query"
                 {:type ::materialization-required

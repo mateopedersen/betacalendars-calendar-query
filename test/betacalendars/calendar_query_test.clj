@@ -67,6 +67,11 @@
     (is (= ["2026-11-02" "2026-11-04" "2026-11-06"] (mapv :date result)))
     (is (every? #(= 4 (:quarter %)) result))))
 
+(deftest date-fields-come-from-date-value
+  (is (= [{:label :marker :year 2027}]
+         (vec (q/execute {:select [:year :label]}
+                         [{:date "2027-01-01" :year 1900 :label :marker}])))))
+
 (deftest validation-and-safe-edn
   (is (= {:source {:type :date-range :from "2026-11-01" :to "2026-11-30"}
           :plan [{:op :filter :predicate [:weekend?]}]

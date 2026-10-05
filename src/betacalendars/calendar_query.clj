@@ -340,10 +340,10 @@
                                   (if-not field 0
                                     (let [c (compare-values (get a field) (get b field))
                                           c (if (= direction :desc) (- c) c)]
-                                      (if (zero? c) (recur more) c))))
+                                      (if (zero? c) (recur more) c)))))
                               rows)))
        :else (eduction (map #(project-record % select serializable?))
-                       (eduction xf input))))))
+                       (eduction xf input)))))
 
 (defn explain
   "Return a deterministic EDN map describing the normalized execution plan."

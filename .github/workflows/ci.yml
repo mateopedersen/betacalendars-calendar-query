@@ -76,6 +76,7 @@ jobs:
           jar tf target/calendar-query-0.1.0.jar | grep -q '^betacalendars/calendar_query/date.clj$'
           if jar tf target/calendar-query-0.1.0.jar | grep -Eq '^(test|bench)/'; then exit 1; fi
           test "$(stat -c%s target/calendar-query-0.1.0.jar)" -gt 0
+          stat -c 'Source JAR size: %s bytes' target/calendar-query-0.1.0.jar
           test -s target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
           POM=target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
           grep -q '<groupId>net.clojars.mateopedersen</groupId>' "$POM"

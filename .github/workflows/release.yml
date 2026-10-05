@@ -21,7 +21,45 @@ jobs:
         with:
           cli: 1.12.5.1664
       - run: clojure -T:build ci
+      - run: curl -fsSL https://raw.githubusercontent.com/cljdoc/cljdoc/master/script/verify-cljdoc-edn | bash -s doc/cljdoc.edn
+      - name: Inspect release artifact and POM
+        run: |
+          jar tf target/calendar-query-0.1.0.jar
+          test -s target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
+          grep -q '<groupId>net.clojars.mateopedersen</groupId>' target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
+          grep -q '<version>0.1.0</version>' target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
+          grep -q '<url>https://www.betacalendars.com/</url>' target/classes/META-INF/maven/net.clojars.mateopedersen/calendar-query/pom.xml
       - run: clojure -T:deploy
         env:
           CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
           CLOJARS_PASSWORD: ${{ secrets.CLOJARS_DEPLOY_TOKEN }}
+
+  verify-consumer:
+    needs: publish
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: DeLaGuardo/setup-clojure@13.6.1
+        with:
+          cli: 1.12.5.1664
+      - name: Resolve published coordinate and run examples
+        run: |
+          mkdir -p "$RUNNER_TEMP/calendar-query-consumer"
+          cd "$RUNNER_TEMP/calendar-query-consumer"
+          cat > deps.edn <<'EOF'
+          {:deps {net.clojars.mateopedersen/calendar-query {:mvn/version "0.1.0"}}}
+          EOF
+          clojure -P
+          clojure -M -e '
+          (require (quote [betacalendars.calendar-query :as q]))
+          (assert (= 3 (count (q/execute {:from "2026-11-01" :to "2026-11-03"}))))
+          (assert (= ["2026-11-02"] (mapv :date (q/execute {:from "2026-11-01" :to "2026-11-03" :where [:weekday? :monday] :select [:date] :serializable? true}))))
+          (assert (:streaming? (q/explain {:from "2026-11-01" :to "2026-11-03"})))
+          (assert (= 31 (:day-count (q/project-month "2027-01"))))
+          (assert (= 42 (count (mapcat identity (:weeks (q/blank-grid {:rows 6 :columns 7}))))))
+          (assert (= [:monday] (mapv :weekday (transduce (q/compile-query {:where [:weekday? :monday] :select [:weekday]}) conj [] (q/reducible-date-range "2026-11-01" "2026-11-03")))))
+          (println "Published consumer smoke checks passed")
+          '

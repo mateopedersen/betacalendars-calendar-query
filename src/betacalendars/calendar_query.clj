@@ -35,7 +35,7 @@
     :iso-week-year (.get d IsoFields/WEEK_BASED_YEAR)
     :quarter (inc (quot (dec (.getMonthValue d)) 3))
     :weekend? (boolean (#{:saturday :sunday} (dates/weekday-keyword d)))
-    :leap-year? (.isLeapYear (.getYear d))
+    :leap-year? (.isLeapYear d)
     :month-start? (= 1 (.getDayOfMonth d))
     :month-end? (= (.lengthOfMonth d) (.getDayOfMonth d))
     :year-start? (and (= 1 (.getMonthValue d)) (= 1 (.getDayOfMonth d)))

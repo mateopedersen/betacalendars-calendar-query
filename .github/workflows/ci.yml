@@ -40,12 +40,12 @@ jobs:
             timezone: 'Asia/Tokyo'
             language: 'ja'
             country: 'JP'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       JAVA_TOOL_OPTIONS: -Duser.timezone=${{ matrix.timezone }} -Duser.language=${{ matrix.language }} -Duser.country=${{ matrix.country }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
@@ -55,10 +55,10 @@ jobs:
       - run: clojure -Sdeps '{:deps {org.clojure/clojure {:mvn/version "${{ matrix.clojure }}"}}}' -M:test
 
   static-and-package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'

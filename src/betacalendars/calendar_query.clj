@@ -43,9 +43,6 @@
     :month-length (.lengthOfMonth d)
     ::unknown))
 
-(defn- known-field? [field derived]
-  (or (contains? base-fields field) (contains? derived field)))
-
 (defn- predicate?* [expr path]
   (when-not (and (vector? expr) (keyword? (first expr)))
     (invalid! "Predicate must be a vector beginning with an operator keyword"
@@ -210,12 +207,6 @@
         _valid-select (when (and select (not (and (vector? select) (every? keyword? select))))
             (invalid! ":select must be a vector of field keywords"
                       {:type ::invalid-query :path [:select] :value select}))
-        allowed-derived (set (keys derived))
-        unknown (seq (remove #(known-field? % allowed-derived) select))
-        _known-select-fields (when unknown
-            (invalid! "Unknown selected field"
-                      {:type ::unknown-field :field (first unknown)
-                       :path [:select (.indexOf select (first unknown))]}))
         order-by (:order-by query)
         _valid-order (when (and order-by
                      (not (and (vector? order-by)
@@ -224,8 +215,6 @@
                                        order-by))))
             (invalid! "Invalid :order-by; expected [[field :asc|:desc] ...]"
                       {:type ::invalid-query :path [:order-by] :value order-by}))
-        _known-order-fields (when-let [field (some (fn [[f _]] (when-not (known-field? f allowed-derived) f)) order-by)]
-            (invalid! "Unknown order field" {:type ::unknown-field :field field :path [:order-by]}))
         _selected-order-fields (when-let [field (and select
                                                       (some (fn [[f _]]
                                                               (when-not (some #{f} select) f))
@@ -236,9 +225,6 @@
         _valid-group (when (and group-field (not (keyword? group-field)))
                        (invalid! ":group-by must be a field keyword"
                                  {:type ::invalid-query :path [:group-by] :value group-field}))
-        _known-group (when (and group-field (not (known-field? group-field allowed-derived)))
-                       (invalid! "Unknown group field"
-                                 {:type ::unknown-field :field group-field :path [:group-by]}))
         _selected-group (when (and group-field select (not (some #{group-field} select)))
                           (invalid! "Grouped field must be included in :select"
                                     {:type ::invalid-query :field group-field :path [:select]}))
@@ -353,7 +339,7 @@
                                  (if-not field 0
                                    (let [c (compare-values (get a field) (get b field))
                                          c (if (= direction :desc) (- c) c)]
-                                     (if (zero? c) (recur more) c))))
+                                     (if (zero? c) (recur more) c)))))
                              rows)))
        :else (eduction xf input))))))
 

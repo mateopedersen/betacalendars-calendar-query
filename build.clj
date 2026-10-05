@@ -24,22 +24,18 @@
      [:tag "v0.1.0"]]]})
 
 (defn clean [_]
-  (b/delete {:path "target"}))
+  (b/delete {:path "target"})
+  (b/delete {:path "pom.xml"}))
 
 (defn jar [_]
-  (b/write-pom {:target "pom.xml"
-                :lib lib
-                :version version
-                :basis @basis
-                :src-dirs ["src"]
-                :pom-data (:pom-data pom-options)})
   (b/write-pom {:class-dir class-dir
                 :lib lib
                 :version version
                 :basis @basis
-                :src-pom "pom.xml"
                 :src-dirs ["src"]
                 :pom-data (:pom-data pom-options)})
+  (b/copy-file {:src (b/pom-path {:lib lib :class-dir class-dir})
+                :target "pom.xml"})
   (b/copy-dir {:src-dirs ["src"] :target-dir class-dir})
   (b/jar {:class-dir class-dir :jar-file jar-file})
   {:jar jar-file :coordinate (str lib) :version version})

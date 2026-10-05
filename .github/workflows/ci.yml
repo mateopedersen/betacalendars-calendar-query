@@ -65,13 +65,27 @@ jobs:
       - uses: DeLaGuardo/setup-clojure@13.6.1
         with:
           cli: 1.12.5.1664
+      - run: clojure -Stree
       - run: clojure -M:lint
       - run: curl -fsSL https://raw.githubusercontent.com/cljdoc/cljdoc/master/script/verify-cljdoc-edn | bash -s doc/cljdoc.edn
       - run: clojure -T:build jar
       - name: Inspect source artifact and POM
         run: |
           jar tf target/calendar-query-0.1.0.jar
+          jar tf target/calendar-query-0.1.0.jar | grep -q '^betacalendars/calendar_query.clj$'
+          jar tf target/calendar-query-0.1.0.jar | grep -q '^betacalendars/calendar_query/date.clj$'
+          if jar tf target/calendar-query-0.1.0.jar | grep -Eq '^(test|bench)/'; then exit 1; fi
+          test "$(stat -c%s target/calendar-query-0.1.0.jar)" -gt 0
           test -s target/classes/META-INF/maven/com.betacalendars/calendar-query/pom.xml
-          grep -q '<groupId>com.betacalendars</groupId>' target/classes/META-INF/maven/com.betacalendars/calendar-query/pom.xml
-          grep -q '<artifactId>calendar-query</artifactId>' target/classes/META-INF/maven/com.betacalendars/calendar-query/pom.xml
-          grep -q '<version>0.1.0</version>' target/classes/META-INF/maven/com.betacalendars/calendar-query/pom.xml
+          POM=target/classes/META-INF/maven/com.betacalendars/calendar-query/pom.xml
+          grep -q '<groupId>com.betacalendars</groupId>' "$POM"
+          grep -q '<artifactId>calendar-query</artifactId>' "$POM"
+          grep -q '<version>0.1.0</version>' "$POM"
+          grep -q '<name>BetaCalendars Calendar Query</name>' "$POM"
+          grep -q '<description>Declarative, composable calendar data queries for Clojure</description>' "$POM"
+          grep -q '<url>https://www.betacalendars.com/</url>' "$POM"
+          grep -q '<name>MIT License</name>' "$POM"
+          grep -q '<tag>v0.1.0</tag>' "$POM"
+          grep -q 'github.com/mateopedersen/betacalendars-calendar-query' "$POM"
+          grep -q '<artifactId>clojure</artifactId>' "$POM"
+          if grep -q 'SNAPSHOT' "$POM"; then exit 1; fi

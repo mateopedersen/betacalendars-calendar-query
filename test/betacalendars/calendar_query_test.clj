@@ -70,7 +70,9 @@
 (deftest date-fields-come-from-date-value
   (is (= [{:label :marker :year 2027}]
          (vec (q/execute {:select [:year :label]}
-                         [{:date "2027-01-01" :year 1900 :label :marker}])))))
+                         [{:date "2027-01-01" :year 1900 :label :marker}]))))
+  (is (= [{:missing nil}]
+         (vec (q/execute {:select [:missing]} [{:date "2027-01-01"}])))))
 
 (deftest validation-and-safe-edn
   (is (= {:source {:type :date-range :from "2026-11-01" :to "2026-11-30"}

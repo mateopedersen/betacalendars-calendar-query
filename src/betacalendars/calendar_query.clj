@@ -177,7 +177,7 @@
         custom (apply dissoc record (conj base-fields :date))
         all (merge computed custom)
         value (fn [k]
-                (let [v (get all k ::unknown)]
+                (let [v (get all k)]
                   (if (and serializable? v)
                     (cond (instance? LocalDate v) (str v)
                           (instance? java.time.YearMonth v) (str v)

@@ -62,7 +62,11 @@
       clojure.lang.IReduce
       (reduce [_ rf] (if (= start end)
                        start
-                       (range-step (.plusDays start 1) end rf start))))))
+                       (range-step (.plusDays start 1) end rf start)))
+      clojure.lang.Seqable
+      (seq [_]
+        (seq (take-while (fn [^LocalDate d] (not (.isAfter d end)))
+                         (iterate (fn [^LocalDate d] (.plusDays d 1)) start))))))
 
 (defn date-range
   "Lazy inclusive sequence of LocalDate values from start through end."

@@ -9,8 +9,7 @@
 
 (def pom-options
   {:pom-data
-   [[:name "BetaCalendars Calendar Query"]
-    [:description "Declarative, composable calendar data queries for Clojure"]
+   [[:description "Declarative, composable calendar data queries for Clojure"]
     [:url "https://www.betacalendars.com/"]
     [:licenses
      [:license

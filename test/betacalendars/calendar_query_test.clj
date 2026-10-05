@@ -126,7 +126,7 @@
     (is (:month-end? (second records))))
   (is (:quarter-start?
        (first (into [] (q/annotate-boundaries)
-                    (q/date-range "2028-04-01" "2028-04-01")))))
+                    (q/date-range "2028-04-01" "2028-04-01"))))))
 
 (deftest calendar-projections
   (let [month (q/project-month "2027-01" {:week-start :monday})

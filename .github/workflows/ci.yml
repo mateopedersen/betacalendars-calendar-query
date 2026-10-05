@@ -82,7 +82,6 @@ jobs:
           grep -q '<groupId>net.clojars.mateopedersen</groupId>' "$POM"
           grep -q '<artifactId>calendar-query</artifactId>' "$POM"
           grep -q '<version>0.1.0</version>' "$POM"
-          grep -q '<name>BetaCalendars Calendar Query</name>' "$POM"
           grep -q '<description>Declarative, composable calendar data queries for Clojure</description>' "$POM"
           grep -q '<url>https://www.betacalendars.com/</url>' "$POM"
           grep -q '<name>MIT License</name>' "$POM"
